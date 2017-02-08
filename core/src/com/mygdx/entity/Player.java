@@ -2,11 +2,12 @@ package com.mygdx.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.util.AssetManager;
+import com.mygdx.util.Constants;
+import com.mygdx.util.Enumerations.Direction;
 import java.util.InputMismatchException;
 
 /**
@@ -14,27 +15,14 @@ import java.util.InputMismatchException;
  */
 public class Player {
 
-    private enum Direction {
-        UP, RIGHT, DOWN, LEFT
-    };
-
-    private TextureRegion[] walkFrames;
-    private AssetManager assets;
-    private Animation anim;
+    private Animation walkingAnim;
     private Direction dir;
-    private final int WALKING_ANIM_COLS = 2;
-    private final int WALKING_ANIM_ROWS = 1;
     private float stateTime;
-    private float animSpeed = 0.1f;
-    private float playerX = 500;
+    private float playerX = 100;
     private float playerY = 100;
-    private float playerSpeed = 450.0f;
-    private int scale = 4;
-    private int spriteSize = 16 * scale;
+    private float playerSpeed = Constants.LINK_WALKING_SPEED;
 
     public Player() {
-        assets = new AssetManager();
-        walkFrames = new TextureRegion[WALKING_ANIM_COLS * WALKING_ANIM_ROWS];
         dir = Direction.UP;
     }
 
@@ -56,23 +44,22 @@ public class Player {
             stateTime += Gdx.graphics.getDeltaTime();
             playerY += playerSpeed * Gdx.graphics.getDeltaTime();
         }
-        
+
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             stateTime = 0;
             playerSpeed = 0;
         }
 
         setWalkingAnimation(dir);
-
     }
 
     public void render(SpriteBatch batch) {
         checkInput();
 
-        TextureRegion currentFrame = anim.getKeyFrame(stateTime, true);
+        TextureRegion currentFrame = walkingAnim.getKeyFrame(stateTime, true);
 
         batch.begin();
-        batch.draw(currentFrame, playerX, playerY, spriteSize, spriteSize);
+        batch.draw(currentFrame, playerX, playerY, Constants.SPRITE_SIZE, Constants.SPRITE_SIZE);
         batch.end();
     }
 
@@ -81,42 +68,24 @@ public class Player {
     }
 
     private void setWalkingAnimation(Direction dir) {
-        Texture sheet;
-        playerSpeed = 450.0f;
+        playerSpeed = Constants.LINK_WALKING_SPEED;
 
         switch (dir) {
             case UP:
-                sheet = assets.linkWalkUpSheet;
+                walkingAnim = AssetManager.getAnimation(Constants.LINK_WALKING_UP_ASSETS_ID);
                 break;
             case RIGHT:
-                sheet = assets.linkWalkSideSheet;
+                walkingAnim = AssetManager.getAnimation(Constants.LINK_WALKING_RIGHT_ASSETS_ID);
                 break;
             case DOWN:
-                sheet = assets.linkWalkDownSheet;
+                walkingAnim = AssetManager.getAnimation(Constants.LINK_WALKING_DOWN_ASSETS_ID);
                 break;
             case LEFT:
-                sheet = assets.linkWalkSideSheet;
+                walkingAnim = AssetManager.getAnimation(Constants.LINK_WALKING_LEFT_ASSETS_ID);
                 break;
             default:
                 throw new InputMismatchException("Direction must be up, down, right, or left.");
         }
-
-        TextureRegion[][] tempRegion = TextureRegion.split(sheet,
-                sheet.getWidth() / WALKING_ANIM_COLS, sheet.getHeight() / WALKING_ANIM_ROWS);
-
-        int index = 0;
-        for (int i = 0; i < WALKING_ANIM_ROWS; i++) {
-            for (int j = 0; j < WALKING_ANIM_COLS; j++) {
-                if (dir == Direction.RIGHT) {
-                    tempRegion[i][j].flip(true, false);
-                    walkFrames[index++] = tempRegion[i][j];
-                } else {
-                    walkFrames[index++] = tempRegion[i][j];
-                }
-            }
-        }
-
-        anim = new Animation(animSpeed, walkFrames);
 
     }
 }
