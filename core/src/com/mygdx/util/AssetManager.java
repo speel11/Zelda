@@ -1,9 +1,7 @@
 package com.mygdx.util;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.HashMap;
 
@@ -15,22 +13,51 @@ public class AssetManager {
     private static HashMap<String, TextureRegion> texturesMap = new HashMap<String, TextureRegion>();
     private static HashMap<String, Animation> animationsMap = new HashMap<String, Animation>();
 
-    public Texture linkWalkUpSheet = new Texture(Gdx.files.internal("link_walk_up.png"));
-    public Texture linkWalkDownSheet = new Texture(Gdx.files.internal("link_walk_down.png"));
-    public Texture linkWalkSideSheet = new Texture(Gdx.files.internal("link_walk_side.png"));
+    public static void loadAssets() {
 
-    
-    //TODO - Modify
-    private static Animation createAnimation(TextureAtlas textureAtlas, String[] regionNames) {
+        animationsMap.put(Constants.LINK_WALKING_UP_ASSETS_ID,
+                createAnimation(new Texture(Constants.LINK_WALKING_UP_ASSETS_PATH),
+                        Constants.LINK_WALKING_ROWS, Constants.LINK_WALKING_COLS,
+                        false, false));
+        animationsMap.put(Constants.LINK_WALKING_RIGHT_ASSETS_ID,
+                createAnimation(new Texture(Constants.LINK_WALKING_SIDE_ASSETS_PATH),
+                        Constants.LINK_WALKING_ROWS, Constants.LINK_WALKING_COLS,
+                        true, false));
+        animationsMap.put(Constants.LINK_WALKING_DOWN_ASSETS_ID,
+                createAnimation(new Texture(Constants.LINK_WALKING_DOWN_ASSETS_PATH),
+                        Constants.LINK_WALKING_ROWS, Constants.LINK_WALKING_COLS,
+                        false, false));
+        animationsMap.put(Constants.LINK_WALKING_LEFT_ASSETS_ID,
+                createAnimation(new Texture(Constants.LINK_WALKING_SIDE_ASSETS_PATH),
+                        Constants.LINK_WALKING_ROWS, Constants.LINK_WALKING_COLS,
+                        false, false));
+    }
 
-        TextureRegion[] runningFrames = new TextureRegion[regionNames.length];
+    public static Animation getAnimation(String id) {
+        return animationsMap.get(id);
+    }
 
-        for (int i = 0; i < regionNames.length; i++) {
-            String path = regionNames[i];
-            runningFrames[i] = textureAtlas.findRegion(path);
+    public static TextureRegion getTexture(String id) {
+        return texturesMap.get(id);
+    }
+
+    private static Animation createAnimation(Texture texture, int rows, int cols,
+            boolean flipX, boolean flipY) {
+        TextureRegion[] frames = new TextureRegion[rows * cols];
+        TextureRegion[][] tempRegion = TextureRegion.split(texture,
+                texture.getWidth() / cols,
+                texture.getHeight() / rows);
+
+        int index = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                tempRegion[i][j].flip(flipX, flipY);
+                frames[index++] = tempRegion[i][j];
+
+            }
         }
 
-        return new Animation(0.1f, runningFrames);
-
+        return new Animation(Constants.ANIM_SPEED, frames);
     }
+
 }
