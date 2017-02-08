@@ -18,7 +18,9 @@ public class AssetManager {
         texturesMap.put(Constants.SWORD_ASSETS_ID, new TextureRegion(
                 new Texture(Constants.SWORD_ASSETS_PATH)));
         
-        
+        /*
+        * LINK WALKING ANIMATIONS
+        */
         animationsMap.put(Constants.LINK_WALKING_UP_ASSETS_ID,
                 createAnimation(new Texture(Constants.LINK_WALKING_UP_ASSETS_PATH),
                         Constants.LINK_WALKING_ROWS, Constants.LINK_WALKING_COLS,
@@ -36,6 +38,9 @@ public class AssetManager {
                         Constants.LINK_WALKING_ROWS, Constants.LINK_WALKING_COLS,
                         false, false));
 
+        /*
+        * LINK ATTACKING ANIMATIONS
+        */
         animationsMap.put(Constants.LINK_ATTACKING_UP_ASSETS_ID,
                 createAnimation(new Texture(Constants.LINK_ATTACKING_UP_ASSETS_PATH),
                         Constants.LINK_ATTACKING_ROWS, Constants.LINK_ATTACKING_COLS,
