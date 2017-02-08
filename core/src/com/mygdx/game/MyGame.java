@@ -2,25 +2,39 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entity.Player;
+import com.mygdx.util.AssetManager;
 
 public class MyGame extends Game {
 
-    private int SCREEN_WIDTH;
-    private int SCREEN_HEIGHT;
-
     private SpriteBatch batch;
+    private Camera camera;
     private Player player;
     private FPSLogger logger = new FPSLogger();
 
+    //TODO - ADD CAMERA
     @Override
     public void create() {
-        SCREEN_WIDTH = Gdx.graphics.getWidth();
-        SCREEN_HEIGHT = Gdx.graphics.getHeight();
+        AssetManager.loadAssets();
+
+        camera = new OrthographicCamera();
+
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+
+        // Constructs a new OrthographicCamera, using the given viewport width and height
+        // Height is multiplied by aspect ratio.
+        camera = new OrthographicCamera(256, 256 * (h / w));
+
+        camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
+        System.out.println(camera.position);
         
+        camera.update();
         batch = new SpriteBatch();
         player = new Player();
 
@@ -31,9 +45,12 @@ public class MyGame extends Game {
         super.render();
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        //logger.log();
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
         player.render(batch);
-
+        
+        
+        logger.log();
     }
 
     @Override
