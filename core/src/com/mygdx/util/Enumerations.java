@@ -10,7 +10,7 @@ public class Enumerations {
         UP, RIGHT, DOWN, LEFT
     };
     
-    private static enum State {
-
+    public static enum LinkStates {
+        IDLE, MOVING, ATTACK_START, ATTACK_SWORD
     };
 }
