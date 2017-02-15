@@ -46,4 +46,7 @@ public class Constants {
     public static final int LINK_ATTACKING_ROWS = 1;
 
     public static final float ANIM_SPEED = 0.1f;
+    
+    public static final String ROOM_TEST_PATH = "roomTest.tmx";
+    public static final String ROOM_TEST_ASSETS_ID = "room_test";
 }
